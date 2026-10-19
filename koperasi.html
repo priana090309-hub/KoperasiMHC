@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KoperasiKu — Sistem Koperasi Digital Sekolah</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #0f172a;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --bg-light: #f8fafc;
+      --border-color: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-light);
+      color: #334155;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%);
+      color: white;
+      padding: 60px 0;
+    }
+
+    /* Cards */
+    .card-custom {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card-custom:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-category {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .toast-container {
+      z-index: 1090;
+    }
+
+    .product-img {
+      height: 180px;
+      object-fit: cover;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR RESPONSIF -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-dark" href="#">
+        <div>
+           <img src="logo.jpg" alt="" width="50">
+          <i class="bi bi-shop fs-4 text-primary"></i>
+        </div>
+        <span>Koperasi<span class="text-primary">Ku</span></span>
+      </a>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav me-auto ms-lg-4 mb-2 mb-lg-0 fw-medium">
+          <li class="nav-item"><a class="nav-link text-dark" href="#home">Beranda</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#dashboard">Dashboard Siswa</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#katalog">Katalog Produk</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#spp">Pembayaran SPP</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#riwayat">Riwayat Pesanan</a></li>
+          <li class="nav-item"><a class="nav-link text-dark" href="#adminPanel">Admin Panel</a></li>
+        </ul>
+
+        <button class="btn btn-primary rounded-pill px-3 position-relative" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart">
+          <i class="bi bi-cart3 me-1"></i> Keranjang
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartBadgeCount">0</span>
+        </button>
+        
+        <button class="btn btn-outline-danger rounded-pill px-3" onclick="logoutSiswa()">
+  <i class="bi bi-box-arrow-right me-1"></i> Keluar
+</button>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header class="hero-section" id="home">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <span class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-20 px-3 py-2 rounded-pill mb-3">
+            <i class="bi bi-stars text-warning me-1"></i> Portal Koperasi Digital Sekolah
+          </span>
+          <h1 class="display-5 fw-bold mb-3">Layanan Koperasi & Keuangan Sekolah</h1>
+          <p class="lead text-white-50 mb-4">Kemudahan belanja seragam, perlengkapan sekolah, dan cek iuran SPP dalam satu sistem digital terpadu.</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="#katalog" class="btn btn-warning text-dark fw-bold px-4 py-2 rounded-3"><i class="bi bi-bag me-1"></i> Belanja Sekarang</a>
+            <a href="#spp" class="btn btn-outline-light px-4 py-2 rounded-3"><i class="bi bi-credit-card me-1"></i> Cek Tagihan SPP</a>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="row g-3 text-dark">
+            <div class="col-6">
+              <div class="card-custom p-3 text-center">
+                <i class="bi bi-box-seam fs-1 text-primary"></i>
+                <h3 class="fw-bold mt-2 mb-0" id="statProduk">0</h3>
+                <small class="text-muted">Produk Ready</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card-custom p-3 text-center">
+                <i class="bi bi-people fs-1 text-success"></i>
+                <h3 class="fw-bold mt-2 mb-0">500+</h3>
+                <small class="text-muted">Siswa Terdaftar</small>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="card-custom p-3 text-center d-flex align-items-center justify-content-around">
+                <i class="bi bi-receipt fs-1 text-warning"></i>
+                <div class="text-start">
+                  <h4 class="fw-bold mb-0" id="statTransaksi">0</h4>
+                  <small class="text-muted">Total Transaksi Selesai</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTAINER UTAMA -->
+  <main class="container my-5">
+
+    <!-- 1. DASHBOARD SISWA -->
+    <section class="mb-5" id="dashboard">
+      <div class="card-custom p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold m-0 text-primary"><i class="bi bi-person-badge me-2"></i>Dashboard Siswa</h5>
+          <span class="badge bg-success-subtle text-success">Akun Aktif</span>
+        </div>
+        <div class="row g-3" id="dashboardContent">
+          <!-- Diisi oleh JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. KATALOG PRODUK -->
+    <section class="mb-5" id="katalog">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+          <h3 class="fw-bold m-0">Katalog Produk</h3>
+          <small class="text-muted">Cari perlengkapan sekolah, seragam, dan kebutuhan siswa</small>
+        </div>
+        <div class="d-flex gap-2">
+          <input type="text" id="searchInput" class="form-control" placeholder="Cari barang..." onkeyup="filterProducts()">
+          <select id="categoryFilter" class="form-select w-auto" onchange="filterProducts()">
+            <option value="All">Semua Kategori</option>
+            <option value="Seragam">Seragam</option>
+            <option value="Alat Tulis">Alat Tulis</option>
+            <option value="Makanan">Makanan/Minuman</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row g-4" id="productGrid">
+        <!-- Diisi oleh JS -->
+      </div>
+    </section>
+
+    <!-- 3. PEMBAYARAN SPP -->
+    <section class="mb-5" id="spp">
+      <div class="card-custom p-4 p-md-5">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-5">
+            <span class="badge bg-primary-subtle text-primary badge-category mb-2">Layanan Keuangan</span>
+            <h3 class="fw-bold">Pengecekan SPP Siswa</h3>
+            <p class="text-muted mb-0">Cek status iuran bulanan sekolah secara akurat dengan memasukkan NIS siswa.</p>
+          </div>
+          <div class="col-lg-7">
+            <form onsubmit="searchSPP(event)" class="d-flex gap-2">
+              <input type="text" id="nisInput" class="form-control form-control-lg" placeholder="Masukkan NIS (Cth: 1001 / 1002)" required>
+              <button type="submit" class="btn btn-primary btn-lg px-4 text-nowrap"><i class="bi bi-search me-1"></i> Cari</button>
+            </form>
+          </div>
+        </div>
+
+        <div id="sppResult" class="mt-4 d-none">
+          <hr>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <table class="table table-borderless">
+                <tr><td class="text-muted">Nama Siswa</td><th id="sppNama">-</th></tr>
+                <tr><td class="text-muted">NIS / Kelas</td><th id="sppNisKelas">-</th></tr>
+                <tr><td class="text-muted">Bulan Tagihan</td><th id="sppBulan">-</th></tr>
+              </table>
+            </div>
+            <div class="col-md-6 text-md-end d-flex flex-column justify-content-center">
+              <span class="text-muted mb-1">Nominal Tagihan:</span>
+              <h2 class="fw-bold text-primary mb-2" id="sppNominal">Rp 0</h2>
+              <div>
+                <span id="sppStatusBadge" class="badge bg-danger fs-6 mb-2">Belum Lunas</span>
+                <div id="sppActionArea"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. RIWAYAT PESANAN -->
+    <section class="mb-5" id="riwayat">
+      <div class="card-custom p-4">
+        <h4 class="fw-bold mb-3"><i class="bi bi-clock-history me-2 text-primary"></i>Riwayat Pesanan Siswa</h4>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>No. Pesanan</th>
+                <th>Tanggal</th>
+                <th>Pemesan</th>
+                <th>Total Pembayaran</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <!-- Diisi oleh JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. ADMIN PANEL -->
+    <section class="mb-5" id="adminPanel">
+      <div class="card-custom p-4 border-warning">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="fw-bold m-0 text-dark"><i class="bi bi-gear-wide-connected me-2 text-warning"></i>Admin Panel (Kelola Koperasi)</h4>
+          <span class="badge bg-warning text-dark">Manajemen Barang</span>
+        </div>
+        <p class="text-muted small">Kelola stok dan tambah produk baru ke dalam katalog secara langsung.</p>
+
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="bg-light p-3 rounded-3 border">
+              <h6 class="fw-bold mb-3">Tambah Produk Baru</h6>
+              <form onsubmit="adminAddProduct(event)">
+                <div class="mb-2"><input type="text" id="adminTitle" class="form-control form-control-sm" placeholder="Nama Produk" required></div>
+                <div class="mb-2">
+                  <select id="adminCategory" class="form-select form-select-sm">
+                    <option value="Seragam">Seragam</option>
+                    <option value="Alat Tulis">Alat Tulis</option>
+                    <option value="Makanan">Makanan</option>
+                  </select>
+                </div>
+                <div class="mb-2"><input type="number" id="adminPrice" class="form-control form-control-sm" placeholder="Harga (Rp)" required></div>
+                <div class="mb-2"><input type="number" id="adminStock" class="form-control form-control-sm" placeholder="Jumlah Stok" required></div>
+                <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold"><i class="bi bi-plus-circle me-1"></i> Simpan Produk</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-md-8">
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>Nama Produk</th>
+                    <th>Harga</th>
+                    <th>Stok</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="adminProductTable">
+                  <!-- Diisi oleh JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- OFFCANVAS KERANJANG -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold"><i class="bi bi-cart3 me-2"></i>Keranjang Belanja</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+      <div id="cartItemsList" class="flex-grow-1 overflow-y-auto mb-3">
+        <!-- Diisi oleh JS -->
+      </div>
+      <div class="border-top pt-3">
+        <div class="d-flex justify-content-between mb-2 fs-5 fw-bold">
+          <span>Total:</span>
+          <span class="text-primary" id="cartTotalPrice">Rp 0</span>
+        </div>
+        <button class="btn btn-primary w-100 py-2 fw-bold" id="btnCheckout" onclick="openCheckoutModal()">Lanjut Checkout <i class="bi bi-arrow-right me-1"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CHECKOUT -->
+  <div class="modal fade" id="checkoutModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold"><i class="bi bi-wallet2 me-2"></i>Formulir Checkout</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form onsubmit="processCheckout(event)">
+          <div class="modal-body">
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nama Lengkap Siswa</label>
+              <input type="text" id="coName" class="form-control" required>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">NIS</label>
+                <input type="text" id="coNis" class="form-control" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Kelas</label>
+                <input type="text" id="coClass" class="form-control" required>
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nomor HP/WhatsApp</label>
+              <input type="tel" id="coPhone" class="form-control" required>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Metode Pembayaran</label>
+              <select id="coPayment" class="form-select" required>
+                <option value="Tunai Koperasi">Tunai di Loket Koperasi</option>
+                <option value="QRIS">QRIS / E-Wallet</option>
+                <option value="Transfer Bank">Transfer Bank</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Catatan Pesanan (Opsional)</label>
+              <textarea id="coNotes" class="form-control" rows="2" placeholder="Ukuran seragam khusus / instruksi"></textarea>
+            </div>
+            <div class="bg-light p-3 rounded-2 border mt-3">
+              <small class="text-muted d-block">Total Pembayaran:</small>
+              <h4 class="fw-bold text-primary mb-0" id="coSummaryTotal">Rp 0</h4>
+            </div>
+          </div>
+          <div class="modal-footer border-top">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary fw-bold">Konfirmasi Pesanan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFIKASI -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMessage">Notifikasi sistem.</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-top py-4 mt-5 text-center text-muted small">
+    <div class="container">
+      <p class="mb-0">&copy; 2026 KoperasiKu — Sistem Informasi Koperasi Digital Sekolah.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- JAVASCRIPT SISTEM -->
+  <script>
+    // PERBAIKAN PENTING: MENGHAPUS DATA LAMA DI BROWSER SETIAP KALI HALAMAN DIBUKA
+    // Ini menjamin gambar seragam.jpeg kamu PASTI dipanggil!
+    localStorage.removeItem('koperasi_products');
+
+    let products = [
+      { id: 1, name: "Baju Seragam lengakp Putih abu", category: "Seragam", price: 55000, stock: 20, image: "seragam.jpeg", desc: "Bahan katun adem, logo OSIS bordir rapi." },
+      { id: 2, name: "baju dan celana olahraga", category: "Seragam", price: 65000, stock: 15, image: "olga.jpeg", desc: "Bahan High Twist tebal dan rapi." },
+      { id: 3, name: "baju dan celana pramuka", category: "Seragam", price: 55000, stock: 50, image: "pramuka.jpeg", desc: "Bahan High Twist tebal dan rapi." },
+      { id: 4, name: "jas/almamater", category: "Seragam", price: 55000, stock: 100, image: "jas.jpeg", desc: "Bahan High Twist tebal dan rapi." },
+      { id: 5, name: "baju jurusan", category: "Seragam", price: 55000, stock: 100, image: "praktek.jpeg", desc: "Bahan High Twist tebal dan rapi." },
+      { id: 6, name: "rok abu", category: "Seragam", price: 55000, stock: 100, image: "rokp.jpeg", desc: "Bahan High Twist tebal dan rapi." },
+      { id: 7, name: "celana abu", category: "Seragam", price: 55000, stock: 100, image: "celana.jpeg", desc: "Bahan High Twist tebal dan rapi." },
+      { id: 8, name: "batik", category: "Seragam", price: 55000, stock: 100, image: "batik.jpeg", desc: "Bahan High Twist tebal dan rapi." },
+      { id: 9, name: "topi", category: "Seragam", price: 5000, stock: 100, image: "topi.jpeg", desc: "Bahan High Twist tebal dan rapi." },
+      { id: 9, name: "ikat pinggang/beber", category: "Seragam", price: 5000, stock: 100, image: "beber.jpeg", desc: "Bahan High Twist tebal dan rapi." },
+      { id: 10, name: "atribut", category: "Seragam", price: 5000, stock: 100, image: "atribut.jpeg", desc: "Bahan High Twist tebal dan rapi." }
+    ];
+
+    let cart = [];
+    let orders = JSON.parse(localStorage.getItem('koperasi_orders')) || [];
+
+    const sppData = {
+      "1001": { name: "Ahmad Rizky", class: "X IPA 1", month: "September 2026", amount: 150000, status: "Belum Lunas" },
+      "1002": { name: "Siti Nurhaliza", class: "XI IPS 2", month: "September 2026", amount: 150000, status: "Belum Lunas" },
+      "1003": { name: "muhamad priana", class: "XII RPL 3", month: "September 2026", amount: 150000, status: "Lunas" }
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderDashboard();
+      renderProducts();
+      renderAdminProducts();
+      renderOrders();
+      updateCartUI();
+    });
+
+    function formatRupiah(num) {
+      return "Rp " + num.toLocaleString('id-ID');
+    }
+
+    function renderDashboard() {
+  // Ambil data NIS 1002 (Siti Nurhaliza) dari sppData
+  const defaultUser = sppData["1003"];
+
+  document.getElementById('dashboardContent').innerHTML = `
+    <div class="col-md-4">
+      <div class="p-3 bg-light rounded">
+        <small class="text-muted d-block">Nama Siswa</small>
+        <strong>${defaultUser.name}</strong>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-3 bg-light rounded">
+        <small class="text-muted d-block">NIS / Kelas</small>
+        <strong>1002 / ${defaultUser.class}</strong>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="p-3 bg-light rounded">
+        <small class="text-muted d-block">Status SPP Bulan Ini</small>
+        <strong class="${defaultUser.status === 'Lunas' ? 'text-success' : 'text-danger'}">${defaultUser.status}</strong>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('statProduk').innerText = products.length;
+  document.getElementById('statTransaksi').innerText = orders.length;
+}
+
+    function renderProducts(items = products) {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+      items.forEach(p => {
+        grid.innerHTML += `
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="card-custom h-100 d-flex flex-column">
+              <img src="${p.image}" class="product-img" alt="${p.name}" onerror="this.src='images/seragam.jpeg'">
+              <div class="card-body p-3 d-flex flex-column">
+                <span class="badge bg-primary-subtle text-primary badge-category mb-2 align-self-start">${p.category}</span>
+                <h6 class="fw-bold mb-1">${p.name}</h6>
+                <p class="text-muted small mb-2 flex-grow-1">${p.desc}</p>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <span class="fw-bold text-primary">${formatRupiah(p.price)}</span>
+                  <button class="btn btn-sm btn-primary rounded-pill" onclick="addToCart(${p.id})"><i class="bi bi-plus-lg"></i> Beli</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filterProducts() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const cat = document.getElementById('categoryFilter').value;
+      const filtered = products.filter(p => {
+        const matchQ = p.name.toLowerCase().includes(q);
+        const matchCat = cat === 'All' || p.category === cat;
+        return matchQ && matchCat;
+      });
+      renderProducts(filtered);
+    }
+
+    function addToCart(id) {
+      const p = products.find(x => x.id === id);
+      const item = cart.find(x => x.id === id);
+      if (item) item.qty++;
+      else cart.push({ ...p, qty: 1 });
+      updateCartUI();
+      showToast(`${p.name} ditambahkan ke keranjang.`);
+    }
+
+    function updateCartUI() {
+      const list = document.getElementById('cartItemsList');
+      list.innerHTML = '';
+      let total = 0, count = 0;
+
+      if (cart.length === 0) {
+        list.innerHTML = `
+          <div class="text-center text-muted my-auto py-5">
+            <i class="bi bi-cart-x fs-1 d-block mb-2"></i>
+            <p>Keranjang belanja masih kosong.</p>
+          </div>
+        `;
+        document.getElementById('cartBadgeCount').innerText = 0;
+        document.getElementById('cartTotalPrice').innerText = formatRupiah(0);
+        document.getElementById('coSummaryTotal').innerText = formatRupiah(0);
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        let subtotal = item.price * item.qty;
+        total += subtotal;
+        count += item.qty;
+
+        list.innerHTML += `
+          <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+            <div class="pe-2">
+              <h6 class="mb-1 fw-bold text-truncate" style="max-width: 140px;">${item.name}</h6>
+              <small class="text-muted">${formatRupiah(item.price)}</small>
+              <div class="text-primary fw-bold mt-1">${formatRupiah(subtotal)}</div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <!-- Tombol Kurang & Tambah -->
+              <div class="input-group input-group-sm" style="width: 95px;">
+                <button class="btn btn-outline-secondary px-2" type="button" onclick="changeQty(${index}, -1)">-</button>
+                <input type="text" class="form-control text-center bg-white px-0" value="${item.qty}" readonly>
+                <button class="btn btn-outline-secondary px-2" type="button" onclick="changeQty(${index}, 1)">+</button>
+              </div>
+              <!-- Tombol Hapus -->
+              <button class="btn btn-outline-danger btn-sm" type="button" onclick="removeFromCart(${index})" title="Hapus">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById('cartBadgeCount').innerText = count;
+      document.getElementById('cartTotalPrice').innerText = formatRupiah(total);
+      document.getElementById('coSummaryTotal').innerText = formatRupiah(total);
+    }
+
+    // Fungsi untuk menambah atau mengurangi kuantitas item di keranjang
+    function changeQty(index, amount) {
+      cart[index].qty += amount;
+      
+      // Jika jumlahnya kurang dari 1, hapus item dari keranjang
+      if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+      }
+      
+      updateCartUI();
+    }
+
+    // Fungsi untuk menghapus item spesifik dari keranjang
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+      showToast('Produk dihapus dari keranjang.');
+    }
+
+    function openCheckoutModal() {
+      if (cart.length === 0) return alert('Keranjang masih kosong!');
+      const modal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+      modal.show();
+    }
+
+    function processCheckout(e) {
+      e.preventDefault();
+      const order = {
+        id: 'ORD-' + Date.now().toString().slice(-4),
+        date: new Date().toLocaleDateString('id-ID'),
+        name: document.getElementById('coName').value,
+        total: cart.reduce((a, b) => a + (b.price * b.qty), 0),
+        status: 'Diproses'
+      };
+      orders.unshift(order);
+      localStorage.setItem('koperasi_orders', JSON.stringify(orders));
+      cart = [];
+      updateCartUI();
+      renderOrders();
+      bootstrap.Modal.getInstance(document.getElementById('checkoutModal')).hide();
+      showToast('Pesanan berhasil dibuat!');
+    }
+
+    function searchSPP(e) {
+      e.preventDefault();
+      const nis = document.getElementById('nisInput').value;
+      const res = sppData[nis];
+      const div = document.getElementById('sppResult');
+      if (res) {
+        div.classList.remove('d-none');
+        document.getElementById('sppNama').innerText = res.name;
+        document.getElementById('sppNisKelas').innerText = `${nis} / ${res.class}`;
+        document.getElementById('sppBulan').innerText = res.month;
+        document.getElementById('sppNominal').innerText = formatRupiah(res.amount);
+        document.getElementById('sppStatusBadge').innerText = res.status;
+        document.getElementById('sppStatusBadge').className = `badge ${res.status === 'Lunas' ? 'bg-success' : 'bg-danger'} fs-6 mb-2`;
+      } else {
+        alert('Data NIS tidak ditemukan.');
+      }
+    }
+
+    function renderOrders() {
+      const tbody = document.getElementById('historyTableBody');
+      tbody.innerHTML = '';
+      orders.forEach(o => {
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${o.id}</strong></td>
+            <td>${o.date}</td>
+            <td>${o.name}</td>
+            <td class="fw-bold text-primary">${formatRupiah(o.total)}</td>
+            <td><span class="badge bg-warning text-dark">${o.status}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderAdminProducts() {
+      const tbody = document.getElementById('adminProductTable');
+      tbody.innerHTML = '';
+      products.forEach(p => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${p.name}</td>
+            <td>${formatRupiah(p.price)}</td>
+            <td>${p.stock}</td>
+            <td><button class="btn btn-sm btn-outline-danger" onclick="deleteProduct(${p.id})"><i class="bi bi-trash"></i></button></td>
+          </tr>
+        `;
+      });
+    }
+
+    function adminAddProduct(e) {
+      e.preventDefault();
+      const newP = {
+        id: Date.now(),
+        name: document.getElementById('adminTitle').value,
+        category: document.getElementById('adminCategory').value,
+        price: parseInt(document.getElementById('adminPrice').value),
+        stock: parseInt(document.getElementById('adminStock').value),
+        image: "seragam.jpeg",
+        desc: "Produk Koperasi Sekolah."
+      };
+      products.push(newP);
+      renderProducts();
+      renderAdminProducts();
+      showToast('Produk baru berhasil ditambahkan!');
+    }
+
+    function deleteProduct(id) {
+      products = products.filter(p => p.id !== id);
+      renderProducts();
+      renderAdminProducts();
+    }
+
+    function showToast(msg) {
+      document.getElementById('toastMessage').innerText = msg;
+      const toast = new bootstrap.Toast(document.getElementById('liveToast'));
+      toast.show();
+    }
+
+    // logout
+    function logoutSiswa() {
+  if (confirm("Apakah kamu yakin ingin keluar dari akun?")) {
+    // 1. Bersihkan data penyimpanan sementara jika ada
+    localStorage.removeItem('currentUser'); // Sesuaikan key jika kamu menyimpan sesi di localStorage
+    
+    // 2. Langsung pindah ke file login.html
+    window.location.href = "login.html";
+  }
+}
+  </script>
+</body>
+</html>

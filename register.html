@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar | MyPortal</title>
+    
+    <link rel="stylesheet" href="yan.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="auth-container">
+        <section class="auth-card">
+            
+            <!-- Brand Logo -->
+            <div class="brand">
+                <div class="brand-logo">M</div>
+                <span>MyPortal</span>
+            </div>
+
+            <!-- Header -->
+            <div class="auth-header">
+                <h1>Buat Akun Baru ✨</h1>
+                <p>Daftar terlebih dahulu untuk menikmati semua fitur.</p>
+            </div>
+
+            <!-- Message Notification -->
+            <div id="message" class="message"></div>
+
+            <!-- Form Registrasi -->
+            <form id="registerForm">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Minimal 3 karakter" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="contoh@email.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Kata Sandi</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" placeholder="Minimal 6 karakter" required>
+                        <button type="button" class="show-password" onclick="togglePassword('password', this)">👁</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">Konfirmasi Kata Sandi</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirmPassword" placeholder="Ulangi kata sandi" required>
+                        <button type="button" class="show-password" onclick="togglePassword('confirmPassword', this)">👁</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    Daftar Sekarang
+                    <span>→</span>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>ATAU</span>
+            </div>
+
+            <p class="auth-footer">
+                Sudah memiliki akun? <a href="login.html">Masuk sekarang</a>
+            </p>
+            
+        </section>
+    </main>
+
+    <script>
+        const registerForm = document.getElementById("registerForm");
+        const message = document.getElementById("message");
+
+        registerForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById("username").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            // Validasi username
+            if (username.length < 3) {
+                showMessage("Username minimal 3 karakter.");
+                return;
+            }
+
+            // Validasi password
+            if (password.length < 6) {
+                showMessage("Kata sandi minimal 6 karakter.");
+                return;
+            }
+
+            // Validasi konfirmasi password
+            if (password !== confirmPassword) {
+                showMessage("Konfirmasi kata sandi tidak sama!");
+                return;
+            }
+
+            // Cek apakah akun sudah ada
+            const existingAccount = localStorage.getItem("userAccount");
+            if (existingAccount) {
+                showMessage("Akun sudah terdaftar. Silakan masuk.");
+                return;
+            }
+
+            // Simpan akun
+            const userAccount = {
+                username: username,
+                email: email,
+                password: password
+            };
+
+            localStorage.setItem("userAccount", JSON.stringify(userAccount));
+
+            // Pesan berhasil
+            message.innerText = "Pendaftaran berhasil! Mengalihkan ke halaman login...";
+            message.classList.add("show", "success");
+
+            // Redirect
+            setTimeout(function() {
+                window.location.href = "login.html";
+            }, 1500);
+        });
+
+        function showMessage(text) {
+            message.innerText = text;
+            message.classList.add("show");
+        }
+
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                button.innerText = "🙈";
+            } else {
+                input.type = "password";
+                button.innerText = "👁";
+            }
+        }
+    </script>
+</body>
+</html>
